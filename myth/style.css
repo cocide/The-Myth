@@ -1,0 +1,113 @@
+* {
+	font-family: "Lucida Grande", Arial, sans serif;
+	font-weight: normal;
+	border: none;
+}
+body {
+	background-color: #1A1A1A;
+	color: #FFF;
+}
+table {
+	width: 100%;
+}
+td, th {
+	display: inline-block;
+	margin-right: .5em;
+	margin-bottom: 0.1em;
+}
+th {
+	padding-right: .5em;
+	margin: 10px inherit;
+}
+th.detail {
+	display: none;
+}
+td.detail {
+	display: none;
+	margin: 10px inherit 20px inherit;
+	font-size: 0.8em;
+	max-width: 42em;
+	color: #555;
+}
+td.tagline, td.overview, td.consensus {
+	text-align: justify;
+	color: #bbb;
+}
+td.year {
+	color: #777;
+}
+td.rating {
+	color: #555;
+}
+td.smallTagline {
+	font-size: 0.9em;
+	color: #888;
+}
+td.genre {
+	color: #555;
+}
+td.director {
+	color: #333;
+} 
+table a {
+	color: #999;
+}
+td.file a {
+	color: inherit;
+}
+td.country {
+	margin-bottom: 2em;
+}
+td.producer {
+	margin-top: 0.5em;
+}
+td.cast, td.country ul li {
+	display: inline-block;
+	width: 21em;
+}
+td.cast, td.country , td.tagline, td.overview, td.time, td.cost, td.studio, td.producer, td.consensus, td.files {
+	border: 0px solid #ABABAB;
+	border-width: 0 0 0 1px;
+	margin-left: 1em;
+	padding-left: 1em;
+}
+ul, li {
+	display: inline;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.imdb, .rt, .tmdb {
+	padding-left: .4em;
+}
+
+span.icon {
+	font-family: Helvetica;
+	font-weight: bold;
+	font-size: .8em;
+	color: #ddd;
+	text-shadow: #000 1px 1px 0px;
+	border: 1px solid #999;
+	border-radius: 2px;
+	box-shadow: 1px 1px 1px #000;
+	margin-right: .5em;
+	padding: 0px 3px 1px 3px;
+	
+	/* IE10 Consumer Preview */ 
+	background-image: -ms-linear-gradient(bottom, #0D0D0D 0%, #4A4A4A 100%);
+
+	/* Mozilla Firefox */ 
+	background-image: -moz-linear-gradient(bottom, #0D0D0D 0%, #4A4A4A 100%);
+
+	/* Opera */ 
+	background-image: -o-linear-gradient(bottom, #0D0D0D 0%, #4A4A4A 100%);
+
+	/* Webkit (Safari/Chrome 10) */ 
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #0D0D0D), color-stop(1, #4A4A4A));
+
+	/* Webkit (Chrome 11+) */ 
+	background-image: -webkit-linear-gradient(bottom, #0D0D0D 0%, #4A4A4A 100%);
+
+	/* W3C Markup, IE10 Release Preview */ 
+	background-image: linear-gradient(to top, #0D0D0D 0%, #4A4A4A 100%);
+}​

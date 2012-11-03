@@ -1,0 +1,2 @@
+# ignore the config file since we make it on first run
+myth/conf.php
