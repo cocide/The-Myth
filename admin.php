@@ -194,12 +194,12 @@ if (!isset($_POST['PASS']) || $_POST['PASS'] != PASS) {
 				mysql_query ("UPDATE files SET tmdb_number=".mysql_real_escape_string($tmdb_number)." WHERE imdb_number=".$imdb_number);
 			}
 		}
-
 	}
+}
+if (isset($_FILES['file'])) {
 	ob_end_clean();
 	header("Location: index.php");
 	exit;
-
 }
 
 function json_response($url) {
