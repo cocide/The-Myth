@@ -201,7 +201,7 @@ if (isset($_FILES['file'])) {
 		}
 	}
 	ob_end_clean();
-	header("Location: index");
+	header("Location: index.php");
 	exit;
 }
 
