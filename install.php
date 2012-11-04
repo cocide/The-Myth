@@ -1,13 +1,12 @@
-<!DOCTYPE html 
-  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?php
+ob_start();
+echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<title>The Myth - Install</title>
 </head>
-<body>
-<?php
+<body>';
 if (!file_exists("conf.php") && !isset($_POST['DATABASE'])) {
 	echo '<form method="post">
 	Database Settings:<br>
@@ -133,10 +132,12 @@ if (file_exists("conf.php")) {
 	) ENGINE=MyISAM DEFAULT CHARSET=latin1;');
 
 	# the DB has been set up, redirect to admin so they can add files
+	ob_end_clean();
 	header("Location: admin.php");
 	exit;
 }
-
+mysql_close($db);
+ob_end_flush();
 ?>
 </body>
 </html>
