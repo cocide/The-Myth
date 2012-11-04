@@ -81,64 +81,68 @@ if (!isset($_POST['PASS']) || $_POST['PASS'] != PASS) {
 			}
 		}
 	}
+}
+if (isset($_FILES['file'])) {
 	$query = "SELECT * FROM files WHERE rt_number IS NULL";
 	$blank_rt = mysql_query($query);
 	while($row = mysql_fetch_array($blank_rt, MYSQL_ASSOC)) {
 		$imdb_number = $row['imdb_number'];
 		$info[$imdb_number] = json_response("http://api.rottentomatoes.com/api/public/v1.0/movie_alias.json?type=imdb&id=".str_pad($imdb_number, 7, "0", STR_PAD_LEFT)."&apikey=".RT_API);
+		if (isset($info[$imdb_number]['title'])) {
 
-		# if that RT number is not in the DB add it
-		$query = "SELECT * FROM info_rt WHERE imdb_number=".$imdb_number;
-		$result = mysql_query($query);
-		if (mysql_num_rows($result) == 0) {
-			mysql_query ("INSERT INTO info_rt SET ".
-				"imdb_number=".$imdb_number.", ".
-				"title='".mysql_real_escape_string($info[$imdb_number]['title'])."', ".
-				"mpaa='".mysql_real_escape_string($info[$imdb_number]['mpaa_rating'])."', ".
-				"runtime=".mysql_real_escape_string($info[$imdb_number]['runtime']).", ".
-				"release_theater='".mysql_real_escape_string($info[$imdb_number]['release_dates']['theater'])."', ".
-				"release_dvd='".mysql_real_escape_string($info[$imdb_number]['release_dates']['dvd'])."', ".
-				"consensus='".mysql_real_escape_string($info[$imdb_number]['critics_consensus'])."', ".
-				"rating_critics=".mysql_real_escape_string($info[$imdb_number]['ratings']['critics_score']).", ".
-				"rating_audience=".mysql_real_escape_string($info[$imdb_number]['ratings']['audience_score']).", ".
-				"studio='".mysql_real_escape_string($info[$imdb_number]['studio'])."', ".
-				"rt_link='".mysql_real_escape_string($info[$imdb_number]['links']['alternate'])."'");
-		}
-
-		# if we do not have any genre for that RT number add it
-		foreach ($info[$imdb_number]['genres'] as $genre) {
-			$query = "SELECT * FROM genre WHERE imdb_number=".$imdb_number." AND name='".mysql_real_escape_string($genre)."'";
+			# if that RT number is not in the DB add it
+			$query = "SELECT * FROM info_rt WHERE imdb_number=".$imdb_number;
 			$result = mysql_query($query);
 			if (mysql_num_rows($result) == 0) {
-				mysql_query ("INSERT INTO genre SET imdb_number=".$imdb_number.", name='".mysql_real_escape_string($genre)."'");
+				mysql_query ("INSERT INTO info_rt SET ".
+					"imdb_number=".$imdb_number.", ".
+					"title='".mysql_real_escape_string($info[$imdb_number]['title'])."', ".
+					"mpaa='".mysql_real_escape_string($info[$imdb_number]['mpaa_rating'])."', ".
+					"runtime=".mysql_real_escape_string($info[$imdb_number]['runtime']).", ".
+					"release_theater='".mysql_real_escape_string($info[$imdb_number]['release_dates']['theater'])."', ".
+					"release_dvd='".mysql_real_escape_string($info[$imdb_number]['release_dates']['dvd'])."', ".
+					"consensus='".mysql_real_escape_string($info[$imdb_number]['critics_consensus'])."', ".
+					"rating_critics=".mysql_real_escape_string($info[$imdb_number]['ratings']['critics_score']).", ".
+					"rating_audience=".mysql_real_escape_string($info[$imdb_number]['ratings']['audience_score']).", ".
+					"studio='".mysql_real_escape_string($info[$imdb_number]['studio'])."', ".
+					"rt_link='".mysql_real_escape_string($info[$imdb_number]['links']['alternate'])."'");
 			}
-		}
 
-
-		# if we do not have any director for that RT number add it
-		foreach ($info[$imdb_number]['abridged_directors'] as $director) {
-			$query = "SELECT * FROM director WHERE imdb_number=".$imdb_number." AND name='".mysql_real_escape_string($director['name'])."'";
-			$result = mysql_query($query);
-			if (mysql_num_rows($result) == 0) {
-				mysql_query ("INSERT INTO director SET imdb_number=".$imdb_number.", name='".mysql_real_escape_string($director['name'])."'");
-			}
-		}
-
-		# if we do not have any cast for that RT number add it
-		foreach ($info[$imdb_number]['abridged_cast'] as $person) {
-			foreach ($person['characters'] as $character) {
-				$query = "SELECT * FROM cast WHERE imdb_number=".$imdb_number." AND rt_celeb_number='".mysql_real_escape_string($person['id'])."' AND role='".mysql_real_escape_string($character)."'";
+			# if we do not have any genre for that RT number add it
+			foreach ($info[$imdb_number]['genres'] as $genre) {
+				$query = "SELECT * FROM genre WHERE imdb_number=".$imdb_number." AND name='".mysql_real_escape_string($genre)."'";
 				$result = mysql_query($query);
 				if (mysql_num_rows($result) == 0) {
-					mysql_query ("INSERT INTO cast SET imdb_number=".$imdb_number.", name='".mysql_real_escape_string($person['name'])."', role='".mysql_real_escape_string($character)."', rt_celeb_number=".mysql_real_escape_string($person['id']));
+					mysql_query ("INSERT INTO genre SET imdb_number=".$imdb_number.", name='".mysql_real_escape_string($genre)."'");
 				}
 			}
+
+
+			# if we do not have any director for that RT number add it
+			foreach ($info[$imdb_number]['abridged_directors'] as $director) {
+				$query = "SELECT * FROM director WHERE imdb_number=".$imdb_number." AND name='".mysql_real_escape_string($director['name'])."'";
+				$result = mysql_query($query);
+				if (mysql_num_rows($result) == 0) {
+					mysql_query ("INSERT INTO director SET imdb_number=".$imdb_number.", name='".mysql_real_escape_string($director['name'])."'");
+				}
+			}
+
+			# if we do not have any cast for that RT number add it
+			foreach ($info[$imdb_number]['abridged_cast'] as $person) {
+				foreach ($person['characters'] as $character) {
+					$query = "SELECT * FROM cast WHERE imdb_number=".$imdb_number." AND rt_celeb_number='".mysql_real_escape_string($person['id'])."' AND role='".mysql_real_escape_string($character)."'";
+					$result = mysql_query($query);
+					if (mysql_num_rows($result) == 0) {
+						mysql_query ("INSERT INTO cast SET imdb_number=".$imdb_number.", name='".mysql_real_escape_string($person['name'])."', role='".mysql_real_escape_string($character)."', rt_celeb_number=".mysql_real_escape_string($person['id']));
+					}
+				}
+			}
+
+			# now that we have all the data update the table
+			mysql_query ("UPDATE files SET rt_number=".mysql_real_escape_string($info[$imdb_number]['id'])." WHERE imdb_number=".$imdb_number);
+
+			usleep(150000); // sleep .15 seconds to not go over our 10 requests per second limit
 		}
-
-		# now that we have all the data update the table
-		mysql_query ("UPDATE files SET rt_number=".mysql_real_escape_string($info[$imdb_number]['id'])." WHERE imdb_number=".$imdb_number);
-
-		usleep(150000); // sleep .15 seconds to not go over our 10 requests per second limit
 	}
 
 	$query = "SELECT * FROM files WHERE tmdb_number IS NULL";
@@ -195,8 +199,6 @@ if (!isset($_POST['PASS']) || $_POST['PASS'] != PASS) {
 			}
 		}
 	}
-}
-if (isset($_FILES['file'])) {
 	ob_end_clean();
 	header("Location: index.php");
 	exit;
