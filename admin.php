@@ -10,7 +10,7 @@ echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www
 
 if (!file_exists("conf.php")) {
 	ob_end_clean();
-	header("Location: install.php");
+	header("Location: install");
 	exit;
 }
 include("conf.php");
@@ -38,7 +38,8 @@ if (!isset($_POST['PASS']) || $_POST['PASS'] != PASS) {
 			<input type="hidden" name="PASS" value="'.$_POST['PASS'].'" />
 			<br />
 			<input type="submit" name="submit" value="Upload" />
-			</form>';
+			</form>
+			NOTE: The file must end in .ls or .txt';
 	} elseif ($_FILES["file"]["error"] > 0) {
 		echo "Error: " . $_FILES["file"]["error"] . "<br />";
 	} else {
@@ -200,7 +201,7 @@ if (isset($_FILES['file'])) {
 		}
 	}
 	ob_end_clean();
-	header("Location: index.php");
+	header("Location: index");
 	exit;
 }
 

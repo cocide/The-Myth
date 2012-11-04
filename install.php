@@ -21,7 +21,9 @@ if (!file_exists("conf.php") && !isset($_POST['DATABASE'])) {
 	<br>
 	Admin Password: <input type="text" name="PASS" value="YourSecretPassword"><br>
 	<input type="submit" value="Install">
-	</form>';
+	</form>
+	NOTE: apache must be able to write to the directory.
+	';
 } elseif (isset($_POST['DATABASE'])) {
 	file_put_contents("conf.php", '<?php
 	define("DB_HOST", "'.$_POST['DB_HOST'].'");
@@ -36,8 +38,8 @@ if (!file_exists("conf.php") && !isset($_POST['DATABASE'])) {
 
 
 	define("PASS", "'.$_POST['PASS'].'");
-	
-?>' );
+?>
+' );
 }
 if (file_exists("conf.php")) {
 	include("conf.php");
@@ -133,7 +135,7 @@ if (file_exists("conf.php")) {
 
 	# the DB has been set up, redirect to admin so they can add files
 	ob_end_clean();
-	header("Location: admin.php");
+	header("Location: admin");
 	exit;
 }
 mysql_close($db);

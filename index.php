@@ -28,7 +28,7 @@ echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www
 
 if (!file_exists("conf.php")) {
 	ob_end_clean();
-	header("Location: install.php");
+	header("Location: install");
 	exit;
 }
 ob_end_flush();

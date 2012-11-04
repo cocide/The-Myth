@@ -30,8 +30,6 @@ Things that Need to Eventually Happen
     * Maybe also background the first pull of data rather than have the page just sit 'loading'
 * Improve security
 * Add a graphical edit for each movie (to spot-fix bugs)
-* Update the 3+ year old JS
-* Clean URLs
   
   
 The Log of Change

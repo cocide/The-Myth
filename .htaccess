@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteRule ^admin/*$ admin.php
+RewriteRule ^install/*$ install.php
