@@ -19,12 +19,20 @@ th {
 	padding-right: .5em;
 	margin: 10px inherit;
 }
+tr {
+	white-space: nowrap;
+}
 th.detail {
 	display: none;
 }
+.shrink {
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
+}
 td.detail {
+	white-space: normal;
 	display: none;
-	margin: 10px inherit 20px inherit;
+	padding: 10px inherit 20px inherit;
 	font-size: 0.8em;
 	max-width: 42em;
 	color: #555;
@@ -35,9 +43,11 @@ td.tagline, td.overview, td.consensus {
 }
 td.year {
 	color: #777;
+	width: 2.3em;
 }
-td.rating {
-	color: #555;
+td.popularity {
+	width: 1.4em;
+	text-align: right;
 }
 td.smallTagline {
 	font-size: 0.9em;
@@ -47,29 +57,36 @@ td.genre {
 	color: #555;
 }
 td.director {
-	color: #333;
-} 
+	color: #777;
+}
+td.rating, td.resolution {
+	margin-right: 0px;
+	font-size: .75em;
+}
 table a {
 	color: #999;
 }
 td.file a {
 	color: inherit;
 }
-td.country {
-	margin-bottom: 2em;
-}
-td.producer {
-	margin-top: 0.5em;
-}
-td.cast, td.country ul li {
+td.cast ul li, td.country ul li {
 	display: inline-block;
 	width: 21em;
+}
+td.files ul li {
+	display: block;
 }
 td.cast, td.country , td.tagline, td.overview, td.time, td.cost, td.studio, td.producer, td.consensus, td.files {
 	border: 0px solid #ABABAB;
 	border-width: 0 0 0 1px;
 	margin-left: 1em;
 	padding-left: 1em;
+}
+td.detail {
+	margin-bottom: 0em;
+}
+td.country {
+	margin-bottom: 2em;
 }
 ul, li {
 	display: inline;
@@ -80,15 +97,14 @@ ul, li {
 .imdb, .rt, .tmdb {
 	padding-left: .4em;
 }
-
-span.icon {
+.icon {
 	font-family: Helvetica;
 	font-weight: bold;
 	font-size: .8em;
-	color: #ddd;
+	color: #999;
 	text-shadow: #000 1px 1px 0px;
-	border: 1px solid #999;
-	border-radius: 2px;
+	border: 1px solid #444;
+	border-radius: .3em;
 	box-shadow: 1px 1px 1px #000;
 	margin-right: .5em;
 	padding: 0px 3px 1px 3px;
@@ -110,4 +126,7 @@ span.icon {
 
 	/* W3C Markup, IE10 Release Preview */ 
 	background-image: linear-gradient(to top, #0D0D0D 0%, #4A4A4A 100%);
-}​
+}
+.missing {
+	color: #444;
+}

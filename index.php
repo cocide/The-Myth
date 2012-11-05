@@ -3,6 +3,7 @@ ob_start();
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<script type="text/javascript" src="js/jquery.js"></script> 
 	<script type="text/javascript" src="js/jquery.tablesorter.js"></script>
 	<script type="text/javascript">
@@ -15,9 +16,8 @@ echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www
 			$("tr").children("td.studio, td.cost, td.producer, td.consensus, td.files, td.cast, td.overview").css({"display" : "block"});
 			$("tr").children("td.studio, td.cost, td.producer, td.consensus, td.files, td.cast, td.overview").hide();
 			
-			$("td.title").click(function () { 
+			$("td.toggle").click(function () { 
 				$(this).parent("tr").children("td.detail").toggle();
-				$(this).parent("tr").children("td.smallTagline").toggle();
 			});
 		});
 	</script>
@@ -77,7 +77,7 @@ for($i = 0; $i <= $ColorSteps; $i++)
 
 
 
-$dark = "111111";
+$dark = "444444";
 $light = "999999";
 
 #make the color gradient
@@ -144,12 +144,6 @@ while ($row = mysql_fetch_array($genre, MYSQL_ASSOC)) {
 	$movie_data[$row['imdb_number']]['genre'][] = $row;
 }
 
-$query = "SELECT * FROM studio";
-$studio = mysql_query($query);
-while ($row = mysql_fetch_array($studio, MYSQL_ASSOC)) {
-	$movie_data[$row['imdb_number']]['studio'] = $row;
-}
-
 $query = "SELECT * FROM producer";
 $producer = mysql_query($query);
 while ($row = mysql_fetch_array($producer, MYSQL_ASSOC)) {
@@ -169,11 +163,11 @@ echo "\n\t<table id=\"Movies\" border=\"2\">\n";
 echo "\t<thead>\n";
 echo "\t<tr>\n";
 echo "\t\t<th class=\"year\">Year</th>\n";
-echo "\t\t<th class=\"popularity\">RT</th>\n";
-echo "\t\t<th class=\"popularity\">USR</th>\n";
+echo "\t\t<th class=\"popularity\">Critics</th>\n";
+echo "\t\t<th class=\"popularity\">Audience</th>\n";
 echo "\t\t<th class=\"title\">Title</th>\n";
 echo "\t\t<th class=\"rating\">Rating</th>\n";
-echo "\t\t<th class=\"smallTagline\">Tagline</th>\n";
+echo "\t\t<th class=\"resolution\">Quality</th>\n";
 echo "\t\t<th class=\"genre\">Genre</th>\n";
 echo "\t\t<th class=\"director\">Director</th>\n";
 echo "\t\t<th class=\"detail studio\">Studio</th>\n";
@@ -192,84 +186,204 @@ echo "\t</thead>\n";
 echo "\t<tbody>\n";
 
 foreach ($movie_data as $imdb_number => $data) {
-	if (!is_null($data['info_rt']['title'])) {
+	if (isset($data['info_rt'])) {
 
 		
 
 			echo "\t<tr>\n";
-			echo "\t\t<td class=\"year\">".substr($data['info_rt']['release_theater'], 0, 4)."</td>\n";
-			echo "\t\t<td class=\"popularity\"><span style=\"color:#".$GradientColors['color'][$data['info_rt']['rating_critics']]."\">".$data['info_rt']['rating_critics']."</span></td>\n";
-			echo "\t\t<td class=\"popularity\"><span style=\"color:#".$GradientColors['mono'][$data['info_rt']['rating_audience']]."\">".$data['info_rt']['rating_audience']."</span></td>\n";
-			echo "\t\t<td class=\"title\">".str_replace("&", "&#38;", $data['info_rt']['title'])."</td>\n";
-			echo "\t\t<td class=\"rating\">";
-			if (!is_null($data['info_rt']['mpaa'])) {
-				echo "(".$data['info_rt']['mpaa'].")";
+			echo "\t\t<td class=\"year toggle\">";
+			if (substr($data['info_rt']['release_theater'], 0, 4) > 0) {
+				echo substr($data['info_rt']['release_theater'], 0, 4);
+			} else {
+				echo "<span class=\"missing\">&mdash;&mdash;</span>";
 			}
 			echo "</td>\n";
-			echo "\t\t<td class=\"smallTagline\">".str_replace("&", "&#38;", $data['info_tmdb']['tagline'])."</td>\n";
-			echo "\t\t<td class=\"genre\">";
-			$previous = false;
-			foreach ($data['genre'] as $genre) {
-				if ($previous) {
-					echo ", ";
-				} else {
-					$previous = true;
+			echo "\t\t<td class=\"popularity toggle\">";
+			if ($data['info_rt']['rating_critics'] > 0) {
+				echo "<span style=\"color:#".$GradientColors['color'][$data['info_rt']['rating_critics']]."\">".$data['info_rt']['rating_critics']."</span>";
+			} else {
+				echo "<span class=\"missing\">&mdash;</span>";
+			}
+			echo "</td>\n";
+			echo "\t\t<td class=\"popularity toggle\">";
+			if ($data['info_rt']['rating_audience'] > 0) {
+				echo "<span style=\"color:#".$GradientColors['mono'][$data['info_rt']['rating_audience']]."\">".$data['info_rt']['rating_audience']."</span>";
+			} else {
+				echo "<span class=\"missing\">&mdash;</span>";
+			}
+			echo "</td>\n";
+			echo "\t\t<td class=\"title toggle\">";
+			if (isset($data['info_rt']['title'])) {
+				echo htmlspecialchars($data['info_rt']['title']);
+			}
+			echo "</td>\n";
+			echo "\t\t<td class=\"rating toggle\">";
+			if (!is_null($data['info_rt']['mpaa']) && $data['info_rt']['mpaa'] != "Unrated") {
+				echo "<span class=\"icon\">".$data['info_rt']['mpaa']."</span>";
+			}
+			echo "</td>\n";
+			echo "\t\t<td class=\"resolution toggle\">";
+			$res = 0;
+			foreach ($data['files'] as $file) {
+				if ($res < 3 && substr($file['resolution'], 0, 4) == "1080") {
+					$res = 3;
+				} elseif ($res < 2 && substr($file['resolution'], 0, 3) == "720") {
+					$res = 2;
+				} elseif ($res < 1 && $file['resolution'] == "SD") {
+					$res = 1;
 				}
-				echo $genre['name'];
-			}
-			echo "</td>\n";
-			echo "\t\t<td class=\"director\">";
-			$previous = false;
-			foreach ($data['director'] as $director) {
-				if ($previous) {
-					echo ", ";
-				} else {
-					$previous = true;
+			} if ($res > 0) {
+				echo "<span class=\"icon\">";
+				switch ($res) {
+					case 3:
+						echo "1080";
+						break;
+					
+					case 2:
+						echo "720";
+						break;
+					
+					case 1:
+						echo "SD";
+						break;
 				}
-				echo $director['name'];
 			}
 			echo "</td>\n";
-			echo "\t\t<td class=\"detail studio\">".$data['info_rt']['studio']."</td>\n";
-			echo "\t\t<td class=\"detail producer\">";
-			$previous = false;
-			foreach ($data['producer'] as $producer) {
-				if ($previous) {
-					echo ", ";
-				} else {
-					$previous = true;
+			echo "\t\t<td class=\"genre toggle\">";
+			if (isset($data['genre']) && count($data['genre']) > 0) {
+				$previous = false;
+				foreach ($data['genre'] as $genre) {
+					if ($previous) {
+						echo ", ";
+					} else {
+						$previous = true;
+					}
+					echo htmlspecialchars($genre['name']);
 				}
-				echo $producer['name'];
 			}
 			echo "</td>\n";
-			echo "\t\t<td class=\"detail consensus\">".$data['info_rt']['consensus']."</td>\n";
+			echo "\t\t<td class=\"director toggle\">";
+			if (isset($data['director']) && count($data['director']) > 0) {
+				$previous = false;
+				foreach ($data['director'] as $director) {
+					if ($previous) {
+						echo ", ";
+					} else {
+						$previous = true;
+					}
+					echo htmlspecialchars($director['name']);
+				}
+			}
+			echo "</td>\n";
+			echo "\t\t<td class=\"detail studio";
+			if (empty($data['info_rt']['studio'])) {
+				echo " shrink";
+			}
+			echo "\">";
+			if (!empty($data['info_rt']['studio'])) {
+				echo "Studio: ".htmlspecialchars($data['info_rt']['studio']);
+			}
+			echo "</td>\n";
+			echo "\t\t<td class=\"detail producer";
+			if (!isset($data['producer'])) {
+				echo " shrink";
+			}
+			echo "\">";
+			if (isset($data['producer']) && count($data['producer']) > 0 ) {
+				echo "Producer";
+				if (count($data['producer']) > 1) {
+					echo "s";
+				}
+				echo ": ";
+				$previous = false;
+				foreach ($data['producer'] as $producer) {
+					if ($previous) {
+						echo ", ";
+					} else {
+						$previous = true;
+					}
+					echo htmlspecialchars($producer['name']);
+				}
+			}
+			echo "</td>\n";
+			echo "\t\t<td class=\"detail consensus";
+			if (empty($data['info_rt']['consensus'])) {
+				echo " shrink";
+			}
+			echo "\">";
+			if (isset($data['info_rt']['consensus'])) {
+				echo htmlspecialchars($data['info_rt']['consensus']);
+			}
+			echo "</td>\n";
 			echo "\t\t<td class=\"detail time\">".$data['info_rt']['runtime']." min</td>\n";
 			echo "\t\t<td class=\"detail imdb\"><a target=\"_blank\" href=\"http://www.imdb.com/title/tt".str_pad($data['files'][0]['imdb_number'], 7, "0", STR_PAD_LEFT)."/\">IMDb</a></td>\n";
 			echo "\t\t<td class=\"detail rt\"><a target=\"_blank\" href=\"".$data['info_rt']['rt_link']."\">RT</a></td>\n";
 			echo "\t\t<td class=\"detail tmdb\"><a target=\"_blank\" href=\"http://www.themoviedb.org/movie/".$data['files'][0]['tmdb_number']."\">TMDb</a></td>\n";
-			echo "\t\t<td class=\"detail cost\">Budget: ".money_format("%.0n", $data['info_tmdb']['budget'])."<br>Box: ".money_format("%.0n", $data['info_tmdb']['revenue'])."</td>\n";
+			echo "\t\t<td class=\"detail cost";
+			if (empty($data['info_tmdb']['budget']) && empty($data['info_tmdb']['revenue'])) {
+				echo " shrink";
+			}
+			echo "\">";
+			if (!empty($data['info_tmdb']['budget'])) {
+				echo "Budget: ".money_format("%.0n", $data['info_tmdb']['budget'])."<br />";
+			}
+			if (!empty($data['info_tmdb']['revenue'])) {
+				echo "Box: ".money_format("%.0n", $data['info_tmdb']['revenue']);
+			}
+			echo "</td>\n";
 			echo "\t\t<td class=\"detail files\"><ul>";
-			$previous = false;
 			foreach ($data['files'] as $file) {
-				if ($previous) {
-					echo "<br>";
-				} else {
-					$previous = true;
+				echo "<li>";
+				if (!empty($file['resolution'])) {
+					echo "<span class=\"icon\">".$file['resolution']."</span>";
 				}
-				echo "<li><span class=\"icon\">".$file['resolution']."</span>".str_replace("&", "&#38;", $file['filename'])."</li>";
+				echo htmlspecialchars($file['filename'])."</li>";
 			}
 			echo "</ul></td>\n";
-			echo "\t\t<td class=\"detail tagline\">".str_replace("&", "&#38;", $data['info_tmdb']['tagline'])."</td>\n";
-			echo "\t\t<td class=\"detail overview\">".str_replace("&", "&#38;", $data['info_tmdb']['overview'])."</td>\n";
-			echo "\t\t<td class=\"detail cast\"><ul>";
-			foreach ($data['cast'] as $cast) {
-				echo "<li><a target=\"_blank\" href=\"http://www.rottentomatoes.com/celebrity/".$cast['rt_celeb_number']."/\">".$cast['name']." (".$cast['role'].")</a></li>";
+			echo "\t\t<td class=\"detail tagline";
+			if (empty($data['info_tmdb']['tagline'])) {
+				echo " shrink";
 			}
-			echo "</ul></td>\n";
-			echo "\t\t<td class=\"detail country\"><ul>";
-			foreach ($data['country'] as $country) {
-				echo "<li>".$country['name']."</li>";
+			echo "\">";
+			if (isset($data['info_tmdb']['tagline'])) {
+				echo htmlspecialchars($data['info_tmdb']['tagline']);
 			}
-			echo "</ul></td>\n";
+			echo "</td>\n";
+			echo "\t\t<td class=\"detail overview";
+			if (empty($data['info_tmdb']['overview'])) {
+				echo " shrink";
+			}
+			echo "\">";
+			if (isset($data['info_tmdb']['overview'])) {
+				echo htmlspecialchars($data['info_tmdb']['overview']);
+			}
+			echo "</td>\n";
+			echo "\t\t<td class=\"detail cast";
+			if (!isset($data['cast'])) {
+				echo " shrink";
+			}
+			echo "\">";
+			if (isset($data['cast']) && count($data['cast']) > 0) {
+				echo "<ul>";
+				foreach ($data['cast'] as $cast) {
+					echo "<li><a target=\"_blank\" href=\"http://www.rottentomatoes.com/celebrity/".$cast['rt_celeb_number']."/\">".htmlspecialchars($cast['name'])." (".htmlspecialchars($cast['role']).")</a></li>";
+				}
+				echo "</ul>";
+			}
+			echo "</td>\n";
+			echo "\t\t<td class=\"detail country";
+			if (!isset($data['country'])) {
+				echo " shrink";
+			}
+			echo "\">";
+			if (isset($data['country']) && count($data['country']) > 0) {
+				echo "<ul>";
+				foreach ($data['country'] as $country) {
+					echo "<li>".htmlspecialchars($country['name'])."</li>";
+				}
+				echo "</ul>";
+			}
+			echo "</td>\n";
 			echo "\t</tr>\n";
 		}
 

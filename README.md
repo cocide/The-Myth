@@ -19,20 +19,18 @@ Things that Need to Eventually Happen
 -------------------------------------
 * Add searching.
     * Things like genre, rating, actor, studio, producer, runtime, budget, box, resolution, year, rating
-* Fix general layout inconsistencies on the data
-    * make it not wrap the text on closed elements
-    * fix the layout of the names
-    * handle year 0000 and rating -1 better
-* More icon work
-    * Add MPAA icons instead of txt
-    * Put an icon for the highest rez next to the title
 * Make a cron based update script to update the ratings weekly
     * Maybe also background the first pull of data rather than have the page just sit 'loading'
 * Improve security
 * Add a graphical edit for each movie (to spot-fix bugs)
+* Improve the regex matching for video quality
   
   
 The Log of Change
 -----------------
+* Nov 04 2012 - v0.1.1
+    * Added icons for quality and rating on the collapsed view
+    * Removed the tagline from the collapsed view
+    * Fixed several CSS problems
 * Nov 03 2012 - v0.1.0
-    * Uploaded first code, mostly based off of the origional myth which had no DB support.
+    * Uploaded first code, mostly based off of the original myth which had no DB support.
