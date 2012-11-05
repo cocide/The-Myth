@@ -24,6 +24,7 @@ Things that Need to Eventually Happen
 * Improve security
 * Add a graphical edit for each movie (to spot-fix bugs)
 * Improve the regex matching for video quality
+* Get better title info (probably from TMDb)
   
   
 The Log of Change
