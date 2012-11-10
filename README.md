@@ -17,18 +17,27 @@ Browsing to admin.php will let you upload new file lists. They must be in a .txt
   
 Things that Need to Eventually Happen
 -------------------------------------
-* Add searching.
-    * Things like genre, rating, actor, studio, producer, runtime, budget, box, resolution, year, rating
-* Make a cron based update script to update the ratings weekly
-    * Maybe also background the first pull of data rather than have the page just sit 'loading'
+* Add advanced search (perhaps)
 * Improve security
 * Add a graphical edit for each movie (to spot-fix bugs)
-* Improve the regex matching for video quality
-* Get better title info (probably from TMDb)
+* Fix sorting of unknown quality movies (currently they mix with SD)
+* Make the form look better.  
   
   
 The Log of Change
 -----------------
+* Nov 10 2012 - v0.2.0
+    * Removed " 3D" from the titles
+    * Changed the year to not be based off of year in theaters (RT updates that to most recent)
+        * NOTE: This will require a DB upgrade, run install to upgrade.
+        * NOTE: It is a good idea to just flush the info_rt table, it will get better year info.
+    * Changed how the IMDB numbers are compared with TMDb and RT
+        * NOTE: This will require a DB upgrade, run install to upgrade.
+    * Added searching.
+    * The regex video quality now matches nearly perfectly for 1080, 720, DvD, R5/6 (no Cam/Screener/TS support)
+    * Added a cron job to be ran nightly, it will update up to 150 movies which are at least 15 days old starting with the oldest.
+        * NOTE: You will need to add a wget (or similar) for cron.php to be ran nightly.
+    * Made the clean URLs able to direct to / instead of /index.php
 * Nov 04 2012 - v0.1.1
     * Added icons for quality and rating on the collapsed view
     * Removed the tagline from the collapsed view
